@@ -87,7 +87,7 @@ namespace BlackJack.Controllers
 			if (!response.IsOK)
 				return response.AsStatus(500);
 
-			game.UpdateStatus();
+			game.UpdateStatus(pile is "dealer");
 			return Ok(game);
 		}
 	}

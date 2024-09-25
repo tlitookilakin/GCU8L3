@@ -13,19 +13,21 @@ namespace BlackJack.Models
 		public bool GameOver { get; set; }
 		public string? Outcome { get; set; }
 
-		public void UpdateStatus()
+		public void UpdateStatus(bool force)
 		{
 			int dealerScore = DealerCards.GetScore();
 			int playerScore = PlayerCards.GetScore();
 			GameOver = true;
 
-			if (dealerScore > 21 || playerScore > dealerScore)
+			if (dealerScore > 21)
 				Outcome = "Win";
 			else if (playerScore > 21)
 				Outcome = "Bust";
-			else if (dealerScore == playerScore)
+			else if (force && playerScore > dealerScore)
+				Outcome = "Win";
+			else if (force && dealerScore == playerScore)
 				Outcome = "Standoff";
-			else if (playerScore < dealerScore)
+			else if (force && playerScore < dealerScore)
 				Outcome = "Loss";
 			else
 				GameOver = false;
