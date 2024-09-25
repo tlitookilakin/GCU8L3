@@ -35,7 +35,6 @@ namespace BlackJack.Controllers
 			response = await service.Draw(game.DeckId, 4);
 			if (!response.IsOK)
 				return response.AsStatus(500);
-
 			var drawn = response.Value.cards;
 
 			response = await service.AddToPile(game.DeckId, "player", drawn[..2]);
@@ -75,7 +74,6 @@ namespace BlackJack.Controllers
 			var response = await service.Draw(game.DeckId, 1);
 			if (!response.IsOK)
 				return response.AsStatus(500);
-
 			var drawn = response.Value.cards;
 
 			if (pile is "player")

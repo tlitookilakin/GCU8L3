@@ -8,8 +8,6 @@ namespace BlackJack.Models
 		public string DeckId { get; set; } = ID;
 		public List<Card> DealerCards { get; set; } = [];
 		public List<Card> PlayerCards { get; set; } = [];
-		public int DealerScore { get; set; }
-		public int PlayerScore { get; set; }
 		public bool GameOver { get; set; }
 		public string? Outcome { get; set; }
 

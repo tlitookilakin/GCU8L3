@@ -26,9 +26,6 @@ namespace BlackJack.Services
 		public Task<Response<Deck>> Draw(string id, int count)
 			=> Get($"{id}/draw/?count={count}");
 
-		public Task<Response<Deck>> Shuffle(string id, bool remainingOnly)
-			=> Get($"{id}/shuffle/?remaining={remainingOnly}");
-
 		public Task<Response<Deck>> AddToPile(string id, string pile, params Card[] cards)
 			=> Get($"{id}/pile/{pile}/add/?cards={string.Join(',', cards.Select(c => c.code))}");
 	}
