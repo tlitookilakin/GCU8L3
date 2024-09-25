@@ -24,12 +24,12 @@ namespace BlackJack.Services
 			=> Get($"new/shuffle/?deck_count={count}");
 
 		public Task<Response<Deck>> Draw(string id, int count)
-			=> Get($"deck/{id}/draw/?count={count}");
+			=> Get($"{id}/draw/?count={count}");
 
 		public Task<Response<Deck>> Shuffle(string id, bool remainingOnly)
-			=> Get($"deck/{id}/shuffle/?remaining={remainingOnly}");
+			=> Get($"{id}/shuffle/?remaining={remainingOnly}");
 
 		public Task<Response<Deck>> AddToPile(string id, string pile, params Card[] cards)
-			=> Get($"deck/{id}/pile/{pile}/add/?cards={string.Join(',', cards.Select(c => c.code))}");
+			=> Get($"{id}/pile/{pile}/add/?cards={string.Join(',', cards.Select(c => c.code))}");
 	}
 }

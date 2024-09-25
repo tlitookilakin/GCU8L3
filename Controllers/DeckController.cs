@@ -13,7 +13,7 @@ namespace BlackJack.Controllers
 		[HttpGet]
 		public IActionResult GetGame()
 		{
-			if (game is null)
+			if (game is null || game.GameOver)
 				return NotFound("No game in play");
 
 			return Ok(game);
