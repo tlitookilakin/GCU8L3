@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BlackJack.Models
 {
@@ -24,9 +25,16 @@ namespace BlackJack.Models
 
 		public bool IsOK => error is null;
 
-		public IActionResult AsStatus(int code)
+		public bool TryGetResult([NotNullWhen(true)] out T? value, [NotNullWhen(false)] out IActionResult? error)
 		{
-			return new ObjectResult("Upstream error: " + error) { StatusCode = code };
+			value = Value;
+			error = null;
+
+			if (this.error is null)
+				return true;
+
+			error = new ObjectResult("Upstream error: " + error) { StatusCode = 500 };
+			return false;
 		}
 	}
 }

@@ -25,26 +25,20 @@ namespace BlackJack.Controllers
 			if (game is not null && !game.GameOver)
 				return StatusCode(409, "Game in progress");
 
-			var response = await service.NewDeck(count);
-			if (!response.IsOK)
-				return response.AsStatus(500);
-
-			var deck = response.Value;
+			if (!(await service.NewDeck(count)).TryGetResult(out Deck? deck, out IActionResult? error))
+				return error;
 			game = new(deck.deck_id);
 
-			response = await service.Draw(game.DeckId, 4);
-			if (!response.IsOK)
-				return response.AsStatus(500);
-			var drawn = response.Value.cards;
+			if (!(await service.Draw(game.DeckId, 4)).TryGetResult(out deck, out error))
+				return error;
+			var drawn = deck.cards;
 
-			response = await service.AddToPile(game.DeckId, "player", drawn[..2]);
-			if (!response.IsOK)
-				return response.AsStatus(500);
+			if (!(await service.AddToPile(game.DeckId, "player", drawn[..2])).TryGetResult(out _, out error))
+				return error;
 			game.PlayerCards.AddRange(drawn[..2]);
 
-			response = await service.AddToPile(game.DeckId, "dealer", drawn[2..]);
-			if (!response.IsOK)
-				return response.AsStatus(500);
+			if (!(await service.AddToPile(game.DeckId, "dealer", drawn[2..])).TryGetResult(out _, out error))
+				return error;
 			game.DealerCards.AddRange(drawn[2..]);
 
 			return Created("blackjack", game);
@@ -68,22 +62,21 @@ namespace BlackJack.Controllers
 				"stand" => "dealer",
 				_ => null
 			};
+
 			if (pile is null)
 				return BadRequest($"'{action}' is not a supported action");
 
-			var response = await service.Draw(game.DeckId, 1);
-			if (!response.IsOK)
-				return response.AsStatus(500);
-			var drawn = response.Value.cards;
+			if (!(await service.Draw(game.DeckId, 1)).TryGetResult(out Deck? deck, out IActionResult? error))
+				return error;
+			var drawn = deck.cards;
+
+			if (!(await service.AddToPile(game.DeckId, pile, drawn)).TryGetResult(out _, out error))
+				return error;
 
 			if (pile is "player")
 				game.PlayerCards.AddRange(drawn);
 			else if (pile is "dealer")
 				game.DealerCards.AddRange(drawn);
-
-			response = await service.AddToPile(game.DeckId, pile, drawn);
-			if (!response.IsOK)
-				return response.AsStatus(500);
 
 			game.UpdateStatus(pile is "dealer");
 			return Ok(game);
